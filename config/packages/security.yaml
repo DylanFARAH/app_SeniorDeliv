@@ -1,22 +1,74 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
-    providers:
-        in_memory: { memory: null }
+    role_hierarchy:
+        ROLE_ADMIN:       [ROLE_ADMIN]
+        ROLE_USER:        [ROLE_USER]
+    
+    providers:  
+            from_database: 
+                entity: 
+                    class: App\Entity\User 
+                    property: username 
+
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: lazy
+            pattern: ^/
+            anonymous: true
+
+            logout:
+                path: /logout
+                target: /home
+
+            #http_basic: true 
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
 
+        #admin_secured_area:
+            #pattern:   ^/admin
+            #anonymous: true
+            provider: from_database
+            form_login:
+                login_path: /login
+                check_path: /login
+                default_target_path: /admin/home
+
+        #user_secured_area:
+            #pattern:   ^/user
+            #anonymous: ~
+            #provider: users
+            #form_login:
+                #login_path: login
+                #check_path: /login
+                #default_target_path: /user
+
+            #form_login: 
+                #check_path: /login
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
+
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+          
+          - { path: ^/user, roles: ROLE_USER }
+          - { path: ^/admin, roles: ROLE_ADMIN }
+
+    encoders:
+        
+        App\Entity\User:
+            algorithm: bcrypt
+            cost: 12 
+
+        App\Entity\Admin:
+            algorithm: bcrypt
+            cost: 12
+
+               
+        #Symfony\Component\Security\Core\User\User: plaintext
+        
