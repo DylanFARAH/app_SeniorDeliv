@@ -1,25 +1,22 @@
 <?php 
 
-namespace src\Controller ;
+namespace src\Controller\Admin ;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
 
-class HomeController extends AbstractController
+class AdminHomeController extends AbstractController
 {
     /**
+     * @Route ("admin/home", name="admin.home")
      * @var Environment
      */
-    
-    /**
-    * @Route ("/home",name="home.index")
-    */
+
     public function index()
     {
-
-        return $this->render('pages/home.html.twig');
+        return $this->render('admin/admin.home.html.twig');
        // return new Response($this->twig->render('pages/home.html.twig'));     
     }
 }
